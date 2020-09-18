@@ -2,6 +2,8 @@ import { Post } from "./entities/Post";
 import { __prod__ } from "./constants";
 import { MikroORM } from "@mikro-orm/core";
 import path from "path";
+import dotenv from "dotenv";
+dotenv.config();
 
 export default {
     migrations: {
@@ -9,9 +11,9 @@ export default {
         pattern: /^[\w-]+\d+\.[tj]s$/,
     },
     entities: [Post],
-    dbName: "postdb",
-    host: "postdb.cjxtv7hywkn9.us-east-2.rds.amazonaws.com",
-    password: "",
+    dbName: process.env.DB_NAME,
+    host: process.env.DB_HOST,
+    password: process.env.DB_PASSWORD,
     type: "postgresql",
     debug: !__prod__,
 } as Parameters<typeof MikroORM.init>[0];
