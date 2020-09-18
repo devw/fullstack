@@ -22,5 +22,10 @@
             "./src/mikro-orm.config.ts",
             "./dist/mikro-orm.config.js"
         ]
+    },
+    "dependencies": {
+        "@mikro-orm/core": "^4.0.3",
+        "@mikro-orm/postgresql": "^4.0.3",
+        "mikro-orm": "^4.0.3"
     }
 }
