@@ -5,6 +5,7 @@ import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import { NumberResolver } from "./resolvers/number";
+import { PostResolver } from "./resolvers/post.resolver";
 
 const main = async () => {
     const orm = await MikroORM.init(microConfig);
@@ -14,9 +15,10 @@ const main = async () => {
     // await orm.em.persistAndFlush(post);
     const apolloServer = new ApolloServer({
         schema: await buildSchema({
-            resolvers: [NumberResolver],
+            resolvers: [NumberResolver, PostResolver],
             validate: false,
         }),
+        context: () => ({ em: orm.em }),
     });
 
     apolloServer.applyMiddleware({ app });
