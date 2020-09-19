@@ -1,5 +1,5 @@
 import { Query, Resolver, Ctx } from "type-graphql";
-import { Post } from "../entities/Post";
+import { Post as PostEntity } from "../entities/post.entity";
 import { EntityManager, IDatabaseDriver, Connection } from "@mikro-orm/core";
 
 type MyContext = {
@@ -8,8 +8,8 @@ type MyContext = {
 
 @Resolver()
 export class PostResolver {
-    @Query(() => [Post])
-    posts(@Ctx() { em }: MyContext): Promise<Post[]> {
-        return em.find(Post, {});
+    @Query(() => [PostEntity])
+    posts(@Ctx() { em }: MyContext): Promise<PostEntity[]> {
+        return em.find(PostEntity, {});
     }
 }
