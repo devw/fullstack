@@ -1,14 +1,33 @@
-import { Post } from "./entities/Post";
+import { Post as PostEntity } from "./entities/post.entity";
 import { MikroORM } from "@mikro-orm/core";
 import microConfig from "./mikro-orm.config";
+import express from "express";
+import { ApolloServer } from "apollo-server-express";
+import { buildSchema } from "type-graphql";
+import { NumberResolver } from "./resolvers/number.resolver";
+import { PostResolver } from "./resolvers/post.resolver";
 
 const main = async () => {
     const orm = await MikroORM.init(microConfig);
-    // await orm.getMigrator().up();
-    const post = orm.em.create(Post, { title: "My 6th post" });
-    await orm.em.persistAndFlush(post);
-    const posts = await orm.em.find(Post, {});
-    console.log(posts);
+    await orm.getMigrator().up();
+    const app = express();
+    // const post = orm.em.create(Post, { title: "My 6th post" });
+    // await orm.em.persistAndFlush(post);
+    const apolloServer = new ApolloServer({
+        schema: await buildSchema({
+            resolvers: [NumberResolver, PostResolver],
+            validate: false,
+        }),
+        context: () => ({ em: orm.em }),
+    });
+
+    apolloServer.applyMiddleware({ app });
+
+    const posts = await orm.em.find(PostEntity, {});
+    app.get("/", (_, res) => res.send(posts));
+    app.listen(4000, () =>
+        console.log("Server started at http://localhost:4000")
+    );
 };
 
 main().catch((err) => {
